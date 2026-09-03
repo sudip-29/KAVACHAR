@@ -1143,7 +1143,7 @@ This allows supervisors to identify **which competencies require additional trai
 ## 1. Clone the Repository
 
 ```bash
-git clone <https://github.com/sudip-29/KAVACHAR>
+git clone <https://github.com/<github_username>/KAVACHAR>
 
 cd KavachAR
 ```

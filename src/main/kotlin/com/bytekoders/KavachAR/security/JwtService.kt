@@ -2,24 +2,28 @@ package com.bytekoders.KavachAR.security
 
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.security.Keys
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import java.util.Date
 import javax.crypto.SecretKey
 
 @Service
-class JwtService {
+class JwtService(
 
-    private val secretKey: SecretKey =
+    @Value("\${jwt.secret}")
+    private val jwtSecret: String,
+
+    @Value("\${jwt.expiration}")
+    private val expirationTime: Long
+
+) {
+
+    private val secretKey: SecretKey by lazy {
         Keys.hmacShaKeyFor(
-            "my-secret-key-for-kavachar-authentication-2026"
-                .toByteArray()
+            jwtSecret.toByteArray()
         )
+    }
 
-    private val expirationTime =
-        1000L * 60 * 60
-
-
-    // Generate JWT token
     fun generateToken(
         email: String,
         role: String
@@ -30,20 +34,13 @@ class JwtService {
             .claim("role", role)
             .issuedAt(Date())
             .expiration(
-                Date(
-                    System.currentTimeMillis()
-                            + expirationTime
-                )
+                Date(System.currentTimeMillis() + expirationTime)
             )
             .signWith(secretKey)
             .compact()
     }
 
-
-    // Extract email from JWT
-    fun extractEmail(
-        token: String
-    ): String {
+    fun extractEmail(token: String): String {
 
         return Jwts.parser()
             .verifyWith(secretKey)

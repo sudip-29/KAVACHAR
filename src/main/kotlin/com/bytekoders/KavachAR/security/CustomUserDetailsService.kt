@@ -1,9 +1,10 @@
 package com.bytekoders.KavachAR.security
 
 import com.bytekoders.KavachAR.repository.UserRepository
-import org.springframework.security.core.userdetails.User
+import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
+import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.stereotype.Service
 
 @Service
@@ -12,21 +13,26 @@ class CustomUserDetailsService(
 ) : UserDetailsService {
 
     override fun loadUserByUsername(
-        email: String
+        emailOrUsername: String
     ): UserDetails {
 
-        val user =
-            userRepository.findByEmail(email)
-                .orElseThrow {
-                    RuntimeException(
-                        "User not found"
-                    )
-                }
+        val user = userRepository
+            .findByEmailOrUsername(
+                emailOrUsername,
+                emailOrUsername
+            )
+            .orElseThrow {
+                UsernameNotFoundException("User not found")
+            }
 
-        return User.builder()
-            .username(user.email)
-            .password(user.password)
-            .roles(user.role)
-            .build()
+        return org.springframework.security.core.userdetails.User(
+            user.email,
+            user.password,
+            listOf(
+                SimpleGrantedAuthority(
+                    "ROLE_${user.role}"
+                )
+            )
+        )
     }
 }

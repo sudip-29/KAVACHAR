@@ -77,18 +77,21 @@ class AuthService(
 
     fun login(request: LoginRequest): LoginResponse {
 
-        authenticationManager.authenticate(
-            UsernamePasswordAuthenticationToken(
-                request.email,
-                request.password
-            )
-        )
-
         val user = userRepository
-            .findByEmail(request.email)
+            .findByEmailOrUsername(
+                request.emailOrUsername,
+                request.emailOrUsername
+            )
             .orElseThrow {
                 RuntimeException("User not found")
             }
+
+        authenticationManager.authenticate(
+            UsernamePasswordAuthenticationToken(
+                user.email,
+                request.password
+            )
+        )
 
         val token = jwtService.generateToken(
             user.email,

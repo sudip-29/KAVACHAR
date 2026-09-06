@@ -1,6 +1,8 @@
 package com.bytekoders.KavachAR.dto
 
 data class LoginRequest(
-    val email: String,
+
+    val emailOrUsername: String,
+
     val password: String
 )

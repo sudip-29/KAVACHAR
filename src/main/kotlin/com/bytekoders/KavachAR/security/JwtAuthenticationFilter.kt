@@ -15,6 +15,7 @@ class JwtAuthenticationFilter(
     private val userDetailsService: CustomUserDetailsService
 ) : OncePerRequestFilter() {
 
+
     override fun doFilterInternal(
         request: HttpServletRequest,
         response: HttpServletResponse,
@@ -74,12 +75,10 @@ class JwtAuthenticationFilter(
             }
 
         } catch (e: Exception) {
-
-            println(
-                "JWT Error: ${e.message}"
-            )
+            println("JWT Error: ${e.message}")
         }
 
+        println("JWT Authentication: ${SecurityContextHolder.getContext().authentication}")
         filterChain.doFilter(request, response)
     }
 }

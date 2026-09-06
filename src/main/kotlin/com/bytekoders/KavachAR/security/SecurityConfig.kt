@@ -148,7 +148,8 @@ class SecurityConfig(
                 auth
                     .requestMatchers(
                         "/api/auth/login",
-                        "/api/auth/register"
+                        "/api/auth/register",
+                        "/api/auth/register-admin"
                     )
                     .permitAll()
 

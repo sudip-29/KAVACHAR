@@ -33,6 +33,9 @@ dependencies {
 	implementation("com.google.zxing:core:3.5.3")
 	implementation("com.google.zxing:javase:3.5.3")
 
+	//Swagger UI
+	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:3.1.1")
+
 	// JWT
 	implementation("io.jsonwebtoken:jjwt-api:0.12.6")
 	runtimeOnly("io.jsonwebtoken:jjwt-impl:0.12.6")

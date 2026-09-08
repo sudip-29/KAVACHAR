@@ -45,6 +45,14 @@ class SecurityConfig(
 
             .authorizeHttpRequests { auth ->
                 auth
+                    //Swagger UI and API docs should be accessible without authentication
+                    .requestMatchers(
+                        "/swagger-ui/**",
+                        "/swagger-ui.html",
+                        "/v3/api-docs/**"
+                    ).permitAll()
+
+                    // Authentication endpoints should be accessible without authentication
                     .requestMatchers(
                         "/api/auth/login",
                         "/api/auth/register",

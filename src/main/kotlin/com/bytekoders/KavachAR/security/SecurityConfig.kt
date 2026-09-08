@@ -153,9 +153,9 @@ class SecurityConfig(
                     )
                     .permitAll()
 
-                    // Public certificate verification endpoint (QR verification)
+                    // Certificate verification endpoint (QR verification) requires authentication
                     .requestMatchers("/api/auth/cert-verification/**")
-                    .permitAll()
+                    .authenticated()
 
                     .requestMatchers("/api/auth/certificates/**")
                     .hasRole("USER")

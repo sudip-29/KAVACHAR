@@ -52,6 +52,10 @@ class SecurityConfig(
                     )
                     .permitAll()
 
+                    // Certificate list — Django service only
+                    .requestMatchers("/api/auth/cert-verification/certificates")
+                    .hasRole("DJANGO_SERVICE")
+
                     // Certificate verification endpoint (QR verification) requires authentication
                     .requestMatchers("/api/auth/cert-verification/**")
                     .authenticated()

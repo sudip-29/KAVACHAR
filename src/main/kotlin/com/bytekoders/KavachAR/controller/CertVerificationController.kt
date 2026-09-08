@@ -1,5 +1,6 @@
 package com.bytekoders.KavachAR.controller
 
+import com.bytekoders.KavachAR.dto.CertificateResponse
 import com.bytekoders.KavachAR.dto.VerificationResponse
 import com.bytekoders.KavachAR.repository.CertificateRepository
 import org.springframework.http.ResponseEntity
@@ -13,6 +14,26 @@ import org.springframework.web.bind.annotation.RestController
 class CertVerificationController(
     private val certificateRepository: CertificateRepository
 ) {
+
+    @GetMapping("/certificates")
+    fun getCertificates(): ResponseEntity<List<CertificateResponse>> {
+
+        val certificates = certificateRepository.findAll()
+
+        val response = certificates.map { certificate ->
+            CertificateResponse(
+                certificateId = certificate.certificateId,
+                userId = certificate.userId,
+                recipientName = certificate.recipientName,
+                certificateTitle = certificate.certificateTitle,
+                issuedAt = certificate.issuedAt,
+                verificationUrl = certificate.verificationUrl,
+                status = certificate.status
+            )
+        }
+
+        return ResponseEntity.ok(response)
+    }
 
     @GetMapping("/{certificateId}/verify")
     fun verify(

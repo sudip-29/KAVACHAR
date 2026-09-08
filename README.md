@@ -1507,7 +1507,7 @@ Add the project's selected license here.
 Example:
 
 ```text
-MIT License
+Apache-2.0 License
 ```
 
 ---

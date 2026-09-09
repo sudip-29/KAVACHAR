@@ -30,11 +30,21 @@ dependencies {
 	// Google
 	implementation("org.springframework.boot:spring-boot-starter-mail")
 
+	implementation("org.springframework.boot:spring-boot-starter-validation")
+
+	// QR Code
+	implementation("com.google.zxing:core:3.5.3")
+	implementation("com.google.zxing:javase:3.5.3")
+
+	//Swagger UI
+	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:3.1.1")
+
 	// JWT
 	implementation("io.jsonwebtoken:jjwt-api:0.12.6")
 	runtimeOnly("io.jsonwebtoken:jjwt-impl:0.12.6")
 	runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.12.6")
 
+	// MySQL
 	runtimeOnly("com.mysql:mysql-connector-j")
 
 	testImplementation("org.springframework.boot:spring-boot-starter-test")

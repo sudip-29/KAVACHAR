@@ -17,7 +17,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @EnableWebSecurity
 class SecurityConfig(
-    private val jwtAuthenticationFilter: JwtAuthenticationFilter
+    private val jwtAuthenticationFilter: JwtAuthenticationFilter,
+    private val serviceAuthenticationFilter: ServiceAuthenticationFilter
 ) {
 
     // Encrypt passwords using BCrypt
@@ -85,10 +86,60 @@ class SecurityConfig(
                 )
             }
 
-            // Set authentication provider
-            .authenticationProvider(authenticationProvider)
+            .authorizeHttpRequests { auth ->
+                auth
+                    //Swagger UI and API docs should be accessible without authentication
+                    .requestMatchers(
+                        "/swagger-ui/**",
+                        "/swagger-ui.html",
+                        "/v3/api-docs/**"
+                    ).permitAll()
+
+                    // Authentication endpoints should be accessible without authentication
+                    .requestMatchers(
+                        "/api/auth/login",
+                        "/api/auth/register",
+                        "/api/auth/register-admin"
+                    )
+                    .permitAll()
+
+                    // Certificate list — Django service only
+                    .requestMatchers("/api/auth/cert-verification/certificates")
+                    .hasRole("DJANGO_SERVICE")
+
+                    // Certificate verification endpoint (QR verification) requires authentication
+                    .requestMatchers("/api/auth/cert-verification/**")
+                    .authenticated()
+
+                    .requestMatchers("/api/auth/certificates/**")
+                    .hasRole("USER")
+
+                    .requestMatchers("/api/admin/**")
+                    .hasRole("ADMIN")
+
+                    .requestMatchers("/api/user/**")
+                    .authenticated()
 
             // JWT filter runs before username/password authentication
+                    .anyRequest()
+                    .authenticated()
+            }
+
+            .exceptionHandling { exceptions ->
+                exceptions
+                    .authenticationEntryPoint { _, response, _ ->
+                        response.sendError(401, "Unauthorized")
+                    }
+                    .accessDeniedHandler { _, response, _ ->
+                        response.sendError(403, "Forbidden")
+                    }
+            }
+
+            .addFilterBefore(
+                serviceAuthenticationFilter,
+                UsernamePasswordAuthenticationFilter::class.java
+            )
+
             .addFilterBefore(
                 jwtAuthenticationFilter,
                 UsernamePasswordAuthenticationFilter::class.java

@@ -3,6 +3,7 @@ package com.bytekoders.KavachAR.controller
 import com.bytekoders.KavachAR.dto.LoginRequest
 import com.bytekoders.KavachAR.dto.LoginResponse
 import com.bytekoders.KavachAR.dto.RegisterRequest
+import com.bytekoders.KavachAR.dto.VerifyOtpRequest
 import com.bytekoders.KavachAR.service.AuthService
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -13,7 +14,9 @@ class AuthController(
     private val authService: AuthService
 ) {
 
+    // =========================
     // USER REGISTER
+    // =========================
     @PostMapping("/register")
     fun register(
         @RequestBody request: RegisterRequest
@@ -24,7 +27,9 @@ class AuthController(
         )
     }
 
+    // =========================
     // ADMIN REGISTER
+    // =========================
     @PostMapping("/register-admin")
     fun registerAdmin(
         @RequestBody request: RegisterRequest
@@ -35,7 +40,25 @@ class AuthController(
         )
     }
 
+    // =========================
+    // VERIFY REGISTRATION OTP
+    // =========================
+    @PostMapping("/verify-otp")
+    fun verifyOtp(
+        @RequestBody request: VerifyOtpRequest
+    ): ResponseEntity<String> {
+
+        return ResponseEntity.ok(
+            authService.verifyRegistrationOtp(
+                email = request.email,
+                otp = request.otp
+            )
+        )
+    }
+
+    // =========================
     // LOGIN
+    // =========================
     @PostMapping("/login")
     fun login(
         @RequestBody request: LoginRequest

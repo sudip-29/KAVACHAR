@@ -61,24 +61,6 @@ class SecurityConfig(
                 csrf.disable()
             }
 
-            // Configure authorization
-            .authorizeHttpRequests { auth ->
-
-                // Authentication APIs are public
-                auth.requestMatchers("/api/auth/**").permitAll()
-
-                // Only ADMIN can access admin APIs
-                auth.requestMatchers("/api/admin/**")
-                    .hasRole("ADMIN")
-
-                // USER and ADMIN can access user APIs
-                auth.requestMatchers("/api/user/**")
-                    .hasAnyRole("USER", "ADMIN")
-
-                // All other APIs require authentication
-                auth.anyRequest().authenticated()
-            }
-
             // JWT uses stateless sessions
             .sessionManagement { session ->
                 session.sessionCreationPolicy(
@@ -90,16 +72,17 @@ class SecurityConfig(
                 auth
                     //Swagger UI and API docs should be accessible without authentication
                     .requestMatchers(
+                        "/api/auth/**",
                         "/swagger-ui/**",
-                        "/swagger-ui.html",
-                        "/v3/api-docs/**"
+                        "/v3/api-docs/**",
+                        "/error"
                     ).permitAll()
-
                     // Authentication endpoints should be accessible without authentication
                     .requestMatchers(
                         "/api/auth/login",
                         "/api/auth/register",
-                        "/api/auth/register-admin"
+                        "/api/auth/register-admin",
+                        "/api/auth/verify-registration-otp"
                     )
                     .permitAll()
 
@@ -120,7 +103,7 @@ class SecurityConfig(
                     .requestMatchers("/api/user/**")
                     .authenticated()
 
-            // JWT filter runs before username/password authentication
+                    // JWT filter runs before username/password authentication
                     .anyRequest()
                     .authenticated()
             }

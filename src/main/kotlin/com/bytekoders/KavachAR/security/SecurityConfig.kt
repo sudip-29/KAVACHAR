@@ -82,7 +82,7 @@ class SecurityConfig(
                         "/api/auth/login",
                         "/api/auth/register",
                         "/api/auth/register-admin",
-                        "/api/auth/verify-registration-otp"
+                        "/api/auth/verify-otp"
                     )
                     .permitAll()
 
